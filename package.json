@@ -1,0 +1,29 @@
+{
+  "name": "yottaflex-learning-engine",
+  "version": "1.0.0",
+  "description": "PostgreSQL-backed learning recommendation engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:db": "node src/test-db.js",
+    "seed:master": "node src/generators/seedMasterData.js",
+    "generate:master": "node src/generators/generateMasterData.js",
+    "seed:content": "node src/generators/seedLearningContent.js",
+    "generate:attempts": "node src/generators/generateAttempts.js",
+    "calculate:mastery": "node src/generators/calculateMastery.js",
+    "generate:recommendations": "node src/generators/generateRecommendations.js",
+    "validate:attempts": "node src/validators/validateAttempts.js",
+    "validate:content-skills": "node src/validators/validateContentSkills.js",
+    "validate:future-mastery": "node src/validators/validateFutureAttemptMastery.js",
+    "validate:path-loops": "node src/validators/validateLearningPathLoops.js",
+    "validate:prerequisites": "node src/validators/validatePrerequisites.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "pg": "^8.23.1"
+  }
+}

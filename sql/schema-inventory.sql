@@ -1,0 +1,258 @@
+-- YottaFlex Learning Engine schema inventory
+-- Generated from the connected PostgreSQL database.
+-- Review the database DDL before using this as a restoration script.
+
+-- Table: assessment_results
+--   assessment_result_id: character varying; nullable=NO; default=none
+--   attempt_id: character varying; nullable=NO; default=none
+--   score: numeric; nullable=NO; default=none
+--   passed: boolean; nullable=NO; default=none
+--   assessed_at: timestamp with time zone; nullable=NO; default=none
+--   grading_version: character varying; nullable=NO; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint assessment_results_score_check (c): CHECK (((score >= (0)::numeric) AND (score <= (100)::numeric)))
+--   Constraint assessment_results_attempt_id_fkey (f): FOREIGN KEY (attempt_id) REFERENCES attempts(attempt_id)
+--   Constraint assessment_results_assessed_at_not_null (n): NOT NULL assessed_at
+--   Constraint assessment_results_assessment_result_id_not_null (n): NOT NULL assessment_result_id
+--   Constraint assessment_results_attempt_id_not_null (n): NOT NULL attempt_id
+--   Constraint assessment_results_created_at_not_null (n): NOT NULL created_at
+--   Constraint assessment_results_grading_version_not_null (n): NOT NULL grading_version
+--   Constraint assessment_results_passed_not_null (n): NOT NULL passed
+--   Constraint assessment_results_score_not_null (n): NOT NULL score
+--   Constraint assessment_results_pkey (p): PRIMARY KEY (assessment_result_id)
+--   Constraint assessment_results_attempt_id_key (u): UNIQUE (attempt_id)
+
+-- Table: attempts
+--   attempt_id: character varying; nullable=NO; default=none
+--   learner_id: character varying; nullable=NO; default=none
+--   content_item_id: character varying; nullable=NO; default=none
+--   attempt_number: integer; nullable=NO; default=none
+--   started_at: timestamp with time zone; nullable=NO; default=none
+--   completed_at: timestamp with time zone; nullable=YES; default=none
+--   score: numeric; nullable=YES; default=none
+--   attempt_status: character varying; nullable=NO; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint attempts_attempt_number_check (c): CHECK ((attempt_number > 0))
+--   Constraint attempts_attempt_status_check (c): CHECK (((attempt_status)::text = ANY ((ARRAY['in_progress'::character varying, 'completed'::character varying, 'abandoned'::character varying])::text[])))
+--   Constraint attempts_check (c): CHECK (((completed_at IS NULL) OR (completed_at >= started_at)))
+--   Constraint attempts_score_check (c): CHECK (((score IS NULL) OR ((score >= (0)::numeric) AND (score <= (100)::numeric))))
+--   Constraint attempts_content_item_id_fkey (f): FOREIGN KEY (content_item_id) REFERENCES content_items(content_item_id)
+--   Constraint attempts_learner_id_fkey (f): FOREIGN KEY (learner_id) REFERENCES learners(learner_id)
+--   Constraint attempts_attempt_id_not_null (n): NOT NULL attempt_id
+--   Constraint attempts_attempt_number_not_null (n): NOT NULL attempt_number
+--   Constraint attempts_attempt_status_not_null (n): NOT NULL attempt_status
+--   Constraint attempts_content_item_id_not_null (n): NOT NULL content_item_id
+--   Constraint attempts_created_at_not_null (n): NOT NULL created_at
+--   Constraint attempts_learner_id_not_null (n): NOT NULL learner_id
+--   Constraint attempts_started_at_not_null (n): NOT NULL started_at
+--   Constraint attempts_pkey (p): PRIMARY KEY (attempt_id)
+--   Constraint attempts_learner_id_content_item_id_attempt_number_key (u): UNIQUE (learner_id, content_item_id, attempt_number)
+
+-- Table: content_items
+--   content_item_id: character varying; nullable=NO; default=none
+--   course_id: character varying; nullable=YES; default=none
+--   title: character varying; nullable=NO; default=none
+--   content_type: character varying; nullable=NO; default=none
+--   difficulty: smallint; nullable=NO; default=none
+--   estimated_minutes: integer; nullable=YES; default=none
+--   content_status: character varying; nullable=NO; default='active'::character varying
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint content_items_content_item_id_check (c): CHECK (((content_item_id)::text ~ '^CNT-[0-9]{6}$'::text))
+--   Constraint content_items_content_status_check (c): CHECK (((content_status)::text = ANY ((ARRAY['draft'::character varying, 'active'::character varying, 'retired'::character varying])::text[])))
+--   Constraint content_items_content_type_check (c): CHECK (((content_type)::text = ANY ((ARRAY['lesson'::character varying, 'quiz'::character varying, 'coding_exercise'::character varying, 'project'::character varying, 'video'::character varying, 'reading'::character varying])::text[])))
+--   Constraint content_items_difficulty_check (c): CHECK (((difficulty >= 1) AND (difficulty <= 5)))
+--   Constraint content_items_estimated_minutes_check (c): CHECK (((estimated_minutes IS NULL) OR (estimated_minutes > 0)))
+--   Constraint content_items_course_id_fkey (f): FOREIGN KEY (course_id) REFERENCES courses(course_id)
+--   Constraint content_items_content_item_id_not_null (n): NOT NULL content_item_id
+--   Constraint content_items_content_status_not_null (n): NOT NULL content_status
+--   Constraint content_items_content_type_not_null (n): NOT NULL content_type
+--   Constraint content_items_created_at_not_null (n): NOT NULL created_at
+--   Constraint content_items_difficulty_not_null (n): NOT NULL difficulty
+--   Constraint content_items_title_not_null (n): NOT NULL title
+--   Constraint content_items_pkey (p): PRIMARY KEY (content_item_id)
+
+-- Table: content_skills
+--   content_item_id: character varying; nullable=NO; default=none
+--   skill_id: character varying; nullable=NO; default=none
+--   relevance_weight: numeric; nullable=NO; default=1.0
+--   Constraint content_skills_relevance_weight_check (c): CHECK (((relevance_weight > (0)::numeric) AND (relevance_weight <= (1)::numeric)))
+--   Constraint content_skills_content_item_id_fkey (f): FOREIGN KEY (content_item_id) REFERENCES content_items(content_item_id)
+--   Constraint content_skills_skill_id_fkey (f): FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+--   Constraint content_skills_content_item_id_not_null (n): NOT NULL content_item_id
+--   Constraint content_skills_relevance_weight_not_null (n): NOT NULL relevance_weight
+--   Constraint content_skills_skill_id_not_null (n): NOT NULL skill_id
+--   Constraint content_skills_pkey (p): PRIMARY KEY (content_item_id, skill_id)
+
+-- Table: courses
+--   course_id: character varying; nullable=NO; default=none
+--   course_name: character varying; nullable=NO; default=none
+--   description: text; nullable=YES; default=none
+--   course_status: character varying; nullable=NO; default='active'::character varying
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint courses_course_id_check (c): CHECK (((course_id)::text ~ '^CRS-[0-9]{6}$'::text))
+--   Constraint courses_course_status_check (c): CHECK (((course_status)::text = ANY ((ARRAY['active'::character varying, 'inactive'::character varying, 'archived'::character varying])::text[])))
+--   Constraint courses_course_id_not_null (n): NOT NULL course_id
+--   Constraint courses_course_name_not_null (n): NOT NULL course_name
+--   Constraint courses_course_status_not_null (n): NOT NULL course_status
+--   Constraint courses_created_at_not_null (n): NOT NULL created_at
+--   Constraint courses_pkey (p): PRIMARY KEY (course_id)
+
+-- Table: ground_truth
+--   ground_truth_id: bigint; nullable=NO; default=none
+--   case_id: character varying; nullable=NO; default=none
+--   case_type: character varying; nullable=NO; default=none
+--   entity_type: character varying; nullable=NO; default=none
+--   entity_id: character varying; nullable=NO; default=none
+--   expected_violation: boolean; nullable=NO; default=true
+--   description: text; nullable=NO; default=none
+--   validation_status: character varying; nullable=NO; default='pending'::character varying
+--   created_at: timestamp with time zone; nullable=NO; default=now()
+--   Constraint ground_truth_case_type_check (c): CHECK (((case_type)::text = ANY ((ARRAY['prerequisite_violation'::character varying, 'invalid_attempt_timestamp'::character varying, 'invalid_content_skill_mapping'::character varying, 'future_attempt_mastery'::character varying, 'learning_path_loop'::character varying])::text[])))
+--   Constraint ground_truth_validation_status_check (c): CHECK (((validation_status)::text = ANY ((ARRAY['pending'::character varying, 'detected'::character varying, 'missed'::character varying])::text[])))
+--   Constraint ground_truth_case_id_not_null (n): NOT NULL case_id
+--   Constraint ground_truth_case_type_not_null (n): NOT NULL case_type
+--   Constraint ground_truth_created_at_not_null (n): NOT NULL created_at
+--   Constraint ground_truth_description_not_null (n): NOT NULL description
+--   Constraint ground_truth_entity_id_not_null (n): NOT NULL entity_id
+--   Constraint ground_truth_entity_type_not_null (n): NOT NULL entity_type
+--   Constraint ground_truth_expected_violation_not_null (n): NOT NULL expected_violation
+--   Constraint ground_truth_ground_truth_id_not_null (n): NOT NULL ground_truth_id
+--   Constraint ground_truth_validation_status_not_null (n): NOT NULL validation_status
+--   Constraint ground_truth_pkey (p): PRIMARY KEY (ground_truth_id)
+--   Constraint ground_truth_case_id_key (u): UNIQUE (case_id)
+
+-- Table: learners
+--   learner_id: character varying; nullable=NO; default=none
+--   email: character varying; nullable=YES; default=none
+--   display_name: character varying; nullable=NO; default=none
+--   learner_status: character varying; nullable=NO; default='active'::character varying
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint learners_learner_id_check (c): CHECK (((learner_id)::text ~ '^LRN-[0-9]{6}$'::text))
+--   Constraint learners_learner_status_check (c): CHECK (((learner_status)::text = ANY ((ARRAY['active'::character varying, 'inactive'::character varying, 'suspended'::character varying])::text[])))
+--   Constraint learners_created_at_not_null (n): NOT NULL created_at
+--   Constraint learners_display_name_not_null (n): NOT NULL display_name
+--   Constraint learners_learner_id_not_null (n): NOT NULL learner_id
+--   Constraint learners_learner_status_not_null (n): NOT NULL learner_status
+--   Constraint learners_pkey (p): PRIMARY KEY (learner_id)
+--   Constraint learners_email_key (u): UNIQUE (email)
+
+-- Table: learning_path_steps
+--   step_id: bigint; nullable=NO; default=none
+--   learning_path_id: character varying; nullable=NO; default=none
+--   step_number: integer; nullable=NO; default=none
+--   content_item_id: character varying; nullable=NO; default=none
+--   step_status: character varying; nullable=NO; default='pending'::character varying
+--   completed_at: timestamp with time zone; nullable=YES; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=now()
+--   Constraint learning_path_steps_step_number_check (c): CHECK ((step_number > 0))
+--   Constraint learning_path_steps_step_status_check (c): CHECK (((step_status)::text = ANY ((ARRAY['pending'::character varying, 'in_progress'::character varying, 'completed'::character varying])::text[])))
+--   Constraint step_completion_consistency (c): CHECK (((((step_status)::text = 'completed'::text) AND (completed_at IS NOT NULL)) OR (((step_status)::text <> 'completed'::text) AND (completed_at IS NULL))))
+--   Constraint learning_path_steps_content_item_id_fkey (f): FOREIGN KEY (content_item_id) REFERENCES content_items(content_item_id)
+--   Constraint learning_path_steps_learning_path_id_fkey (f): FOREIGN KEY (learning_path_id) REFERENCES learning_paths(learning_path_id) ON DELETE CASCADE
+--   Constraint learning_path_steps_content_item_id_not_null (n): NOT NULL content_item_id
+--   Constraint learning_path_steps_created_at_not_null (n): NOT NULL created_at
+--   Constraint learning_path_steps_learning_path_id_not_null (n): NOT NULL learning_path_id
+--   Constraint learning_path_steps_step_id_not_null (n): NOT NULL step_id
+--   Constraint learning_path_steps_step_number_not_null (n): NOT NULL step_number
+--   Constraint learning_path_steps_step_status_not_null (n): NOT NULL step_status
+--   Constraint learning_path_steps_pkey (p): PRIMARY KEY (step_id)
+--   Constraint unique_path_step (u): UNIQUE (learning_path_id, step_number)
+
+-- Table: learning_paths
+--   learning_path_id: character varying; nullable=NO; default=none
+--   learner_id: character varying; nullable=NO; default=none
+--   course_id: character varying; nullable=NO; default=none
+--   path_status: character varying; nullable=NO; default='active'::character varying
+--   started_at: timestamp with time zone; nullable=NO; default=none
+--   completed_at: timestamp with time zone; nullable=YES; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint learning_paths_check (c): CHECK (((completed_at IS NULL) OR (completed_at >= started_at)))
+--   Constraint learning_paths_learning_path_id_check (c): CHECK (((learning_path_id)::text ~ '^PATH-[0-9]{4}-[0-9]{6}$'::text))
+--   Constraint learning_paths_path_status_check (c): CHECK (((path_status)::text = ANY ((ARRAY['active'::character varying, 'completed'::character varying, 'paused'::character varying, 'cancelled'::character varying])::text[])))
+--   Constraint learning_paths_course_id_fkey (f): FOREIGN KEY (course_id) REFERENCES courses(course_id)
+--   Constraint learning_paths_learner_id_fkey (f): FOREIGN KEY (learner_id) REFERENCES learners(learner_id)
+--   Constraint learning_paths_course_id_not_null (n): NOT NULL course_id
+--   Constraint learning_paths_created_at_not_null (n): NOT NULL created_at
+--   Constraint learning_paths_learner_id_not_null (n): NOT NULL learner_id
+--   Constraint learning_paths_learning_path_id_not_null (n): NOT NULL learning_path_id
+--   Constraint learning_paths_path_status_not_null (n): NOT NULL path_status
+--   Constraint learning_paths_started_at_not_null (n): NOT NULL started_at
+--   Constraint learning_paths_pkey (p): PRIMARY KEY (learning_path_id)
+
+-- Table: mastery_estimates
+--   mastery_estimate_id: bigint; nullable=NO; default=none
+--   learner_id: character varying; nullable=NO; default=none
+--   skill_id: character varying; nullable=NO; default=none
+--   attempts_count: integer; nullable=NO; default=none
+--   mastery_score: numeric; nullable=YES; default=none
+--   calculated_at: timestamp with time zone; nullable=NO; default=now()
+--   data_cutoff_at: timestamp with time zone; nullable=NO; default=none
+--   calculation_version: character varying; nullable=NO; default='v1'::character varying
+--   Constraint mastery_estimates_attempts_count_check (c): CHECK ((attempts_count >= 0))
+--   Constraint mastery_estimates_check (c): CHECK ((data_cutoff_at <= calculated_at))
+--   Constraint mastery_estimates_mastery_score_check (c): CHECK (((mastery_score >= (0)::numeric) AND (mastery_score <= (100)::numeric)))
+--   Constraint mastery_estimates_learner_id_fkey (f): FOREIGN KEY (learner_id) REFERENCES learners(learner_id)
+--   Constraint mastery_estimates_skill_id_fkey (f): FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+--   Constraint mastery_estimates_attempts_count_not_null (n): NOT NULL attempts_count
+--   Constraint mastery_estimates_calculated_at_not_null (n): NOT NULL calculated_at
+--   Constraint mastery_estimates_calculation_version_not_null (n): NOT NULL calculation_version
+--   Constraint mastery_estimates_data_cutoff_at_not_null (n): NOT NULL data_cutoff_at
+--   Constraint mastery_estimates_learner_id_not_null (n): NOT NULL learner_id
+--   Constraint mastery_estimates_mastery_estimate_id_not_null (n): NOT NULL mastery_estimate_id
+--   Constraint mastery_estimates_skill_id_not_null (n): NOT NULL skill_id
+--   Constraint mastery_estimates_pkey (p): PRIMARY KEY (mastery_estimate_id)
+
+-- Table: recommendations
+--   recommendation_id: character varying; nullable=NO; default=none
+--   learner_id: character varying; nullable=NO; default=none
+--   learning_path_id: character varying; nullable=YES; default=none
+--   content_item_id: character varying; nullable=NO; default=none
+--   generated_at: timestamp with time zone; nullable=NO; default=none
+--   mastery_at_generation: numeric; nullable=YES; default=none
+--   reason_codes: jsonb; nullable=NO; default='[]'::jsonb
+--   rationale: text; nullable=NO; default=none
+--   recommendation_status: character varying; nullable=NO; default='recommended'::character varying
+--   outcome_attempt_id: character varying; nullable=YES; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint recommendations_check (c): CHECK ((((recommendation_status)::text <> 'completed'::text) OR (outcome_attempt_id IS NOT NULL)))
+--   Constraint recommendations_mastery_at_generation_check (c): CHECK (((mastery_at_generation IS NULL) OR ((mastery_at_generation >= (0)::numeric) AND (mastery_at_generation <= (100)::numeric))))
+--   Constraint recommendations_reason_codes_check (c): CHECK ((jsonb_typeof(reason_codes) = 'array'::text))
+--   Constraint recommendations_recommendation_status_check (c): CHECK (((recommendation_status)::text = ANY ((ARRAY['recommended'::character varying, 'accepted'::character varying, 'rejected'::character varying, 'completed'::character varying, 'expired'::character varying])::text[])))
+--   Constraint recommendations_content_item_id_fkey (f): FOREIGN KEY (content_item_id) REFERENCES content_items(content_item_id)
+--   Constraint recommendations_learner_id_fkey (f): FOREIGN KEY (learner_id) REFERENCES learners(learner_id)
+--   Constraint recommendations_learning_path_id_fkey (f): FOREIGN KEY (learning_path_id) REFERENCES learning_paths(learning_path_id)
+--   Constraint recommendations_outcome_attempt_id_fkey (f): FOREIGN KEY (outcome_attempt_id) REFERENCES attempts(attempt_id)
+--   Constraint recommendations_content_item_id_not_null (n): NOT NULL content_item_id
+--   Constraint recommendations_created_at_not_null (n): NOT NULL created_at
+--   Constraint recommendations_generated_at_not_null (n): NOT NULL generated_at
+--   Constraint recommendations_learner_id_not_null (n): NOT NULL learner_id
+--   Constraint recommendations_rationale_not_null (n): NOT NULL rationale
+--   Constraint recommendations_reason_codes_not_null (n): NOT NULL reason_codes
+--   Constraint recommendations_recommendation_id_not_null (n): NOT NULL recommendation_id
+--   Constraint recommendations_recommendation_status_not_null (n): NOT NULL recommendation_status
+--   Constraint recommendations_pkey (p): PRIMARY KEY (recommendation_id)
+
+-- Table: skill_prerequisites
+--   skill_id: character varying; nullable=NO; default=none
+--   prerequisite_skill_id: character varying; nullable=NO; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint skill_prerequisites_check (c): CHECK (((skill_id)::text <> (prerequisite_skill_id)::text))
+--   Constraint skill_prerequisites_prerequisite_skill_id_fkey (f): FOREIGN KEY (prerequisite_skill_id) REFERENCES skills(skill_id)
+--   Constraint skill_prerequisites_skill_id_fkey (f): FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+--   Constraint skill_prerequisites_created_at_not_null (n): NOT NULL created_at
+--   Constraint skill_prerequisites_prerequisite_skill_id_not_null (n): NOT NULL prerequisite_skill_id
+--   Constraint skill_prerequisites_skill_id_not_null (n): NOT NULL skill_id
+--   Constraint skill_prerequisites_pkey (p): PRIMARY KEY (skill_id, prerequisite_skill_id)
+
+-- Table: skills
+--   skill_id: character varying; nullable=NO; default=none
+--   skill_name: character varying; nullable=NO; default=none
+--   description: text; nullable=YES; default=none
+--   created_at: timestamp with time zone; nullable=NO; default=CURRENT_TIMESTAMP
+--   Constraint skills_skill_id_check (c): CHECK (((skill_id)::text ~ '^SKL-[0-9]{6}$'::text))
+--   Constraint skills_created_at_not_null (n): NOT NULL created_at
+--   Constraint skills_skill_id_not_null (n): NOT NULL skill_id
+--   Constraint skills_skill_name_not_null (n): NOT NULL skill_name
+--   Constraint skills_pkey (p): PRIMARY KEY (skill_id)
+--   Constraint skills_skill_name_key (u): UNIQUE (skill_name)
+
