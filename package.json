@@ -4,7 +4,7 @@
   "description": "PostgreSQL-backed learning recommendation engine",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:db && npm run validate:attempts && npm run validate:content-skills && npm run validate:future-mastery && npm run validate:path-loops && npm run validate:prerequisites",
     "test:db": "node src/test-db.js",
     "seed:master": "node src/generators/seedMasterData.js",
     "generate:master": "node src/generators/generateMasterData.js",
@@ -16,7 +16,8 @@
     "validate:content-skills": "node src/validators/validateContentSkills.js",
     "validate:future-mastery": "node src/validators/validateFutureAttemptMastery.js",
     "validate:path-loops": "node src/validators/validateLearningPathLoops.js",
-    "validate:prerequisites": "node src/validators/validatePrerequisites.js"
+    "validate:prerequisites": "node src/validators/validatePrerequisites.js",
+    "generate:learning-paths": "node src/generators/generateLearningPaths.js"
   },
   "keywords": [],
   "author": "",

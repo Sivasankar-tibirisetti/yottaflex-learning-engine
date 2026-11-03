@@ -26,9 +26,13 @@ async function recordRecommendationOutcome(
 
     const recommendation = recommendationResult.rows[0];
 
-    if (recommendation.recommendation_status === "completed") {
-      throw new Error("Recommendation is already completed.");
-    }
+   if (!["recommended", "accepted"].includes(
+  recommendation.recommendation_status
+)) {
+  throw new Error(
+    `Cannot record outcome for recommendation with status: ${recommendation.recommendation_status}`
+  );
+}
 
     if (recommendation.outcome_attempt_id !== null) {
       throw new Error("Recommendation already has an outcome attempt.");
