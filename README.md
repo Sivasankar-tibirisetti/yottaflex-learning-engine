@@ -241,6 +241,22 @@ The recommendation and outcome association are updated within a database transac
 ```text
 yottaflex-learning-engine/
 │
+├── data/
+│   └── exports/
+│       ├── csv/
+│       └── json/
+│
+├── docs/
+│   ├── AI_prompt_history.md
+│   ├── DATA_DICTIONARY.md
+│   ├── SOURCE_MANIFEST.md
+│   └── VALIDATION_REPORT.md
+│
+├── sql/
+│   ├── schema.sql
+│   ├── schema-inventory.sql
+│   └── seed-data.dump
+│
 ├── src/
 │   ├── config/
 │   │   └── db.js
@@ -252,7 +268,8 @@ yottaflex-learning-engine/
 │   │   ├── generateLearningPaths.js
 │   │   ├── recordRecommendationOutcome.js
 │   │   ├── seedMasterData.js
-│   │   └── seedLearningContent.js
+│   │   ├── seedLearningContent.js
+│   │   └── exportDataset.js
 │   ├── validators/
 │   │   ├── validateAttempts.js
 │   │   ├── validateContentSkills.js
@@ -261,10 +278,6 @@ yottaflex-learning-engine/
 │   │   └── validatePrerequisites.js
 │   └── test-db.js
 │
-├── sql/
-│   └── schema-inventory.sql
-│
-├── .env
 ├── .gitignore
 ├── package.json
 ├── package-lock.json

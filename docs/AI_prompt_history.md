@@ -152,6 +152,6 @@ The attempts count is 500,001, one above the 500,000 target. The additional reco
 
 ## 8. Repository
 
-**GitHub:** https://github.com/Sivasankar-tibirisetâ€‹â€‹ti/yottaflex-learning-engine/tree/feature/dev_shankar
+**GitHub:** [YottaFlex Learning Engine](https://github.com/Sivasankar-tibirisetti/yottaflex-learning-engine/tree/feature/dev_shankar)
 
 **AI usage declaration:** ChatGPT was the only AI tool used during this project. No other AI tools were used.
