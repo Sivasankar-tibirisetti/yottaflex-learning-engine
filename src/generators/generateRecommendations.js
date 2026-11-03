@@ -38,7 +38,7 @@ async function generateRecommendations() {
       FROM skill_prerequisites
     `);
 
-   
+
     const masteryResult = await client.query(
       `
       SELECT DISTINCT ON (learner_id, skill_id)
@@ -57,10 +57,11 @@ async function generateRecommendations() {
     );
 
 
-    const attemptedResult = await client.query(`
-      SELECT DISTINCT learner_id, content_item_id
-      FROM attempts
-    `);
+   const attemptedResult = await client.query(`
+  SELECT DISTINCT learner_id, content_item_id
+  FROM attempts
+  WHERE attempt_status = 'completed'
+`);
 
     const masteryByLearner = new Map();
 
@@ -99,9 +100,9 @@ async function generateRecommendations() {
 
     let inserted = 0;
     let skipped = 0;
-    let sequence = 0;
 
-    
+
+
     const existingPendingResult = await client.query(`
       SELECT DISTINCT learner_id
       FROM recommendations
@@ -114,7 +115,7 @@ async function generateRecommendations() {
 
 
     for (const learner of learnersResult.rows) {
-        
+
       if (learnersWithPending.has(learner.learner_id)) {
         skipped++;
         continue;
@@ -189,8 +190,6 @@ async function generateRecommendations() {
         continue;
       }
 
-      sequence++;
-
       const reasonCodes =
         selected.mastery === null
           ? ["COLD_START_SKILL", "PREREQUISITES_SATISFIED"]
@@ -201,10 +200,10 @@ async function generateRecommendations() {
           ? `Recommend "${selected.title}" because the learner has no recorded mastery estimate for this skill, and its prerequisites are satisfied.`
           : `Recommend "${selected.title}" because estimated mastery is ${selected.mastery.toFixed(2)}%, below the configured threshold of ${MASTERY_THRESHOLD}%, and its prerequisites are satisfied.`;
 
-      const recommendationId =
-        `REC-${Date.now()}-${String(sequence).padStart(6, "0")}`;
+           const recommendationId =
+        `REC-${learner.learner_id}-${selected.content_item_id}`;
 
-      await client.query(
+      const insertResult = await client.query(
         `INSERT INTO recommendations (
           recommendation_id,
           learner_id,
@@ -217,7 +216,8 @@ async function generateRecommendations() {
           recommendation_status,
           outcome_attempt_id
         )
-        VALUES ($1, $2, NULL, $3, NOW(), $4, $5::jsonb, $6, 'recommended', NULL)`,
+        VALUES ($1, $2, NULL, $3, NOW(), $4, $5::jsonb, $6, 'recommended', NULL)
+        ON CONFLICT (recommendation_id) DO NOTHING`,
         [
           recommendationId,
           learner.learner_id,
@@ -228,7 +228,7 @@ async function generateRecommendations() {
         ]
       );
 
-      inserted++;
+      inserted += insertResult.rowCount;
     }
 
     await client.query("COMMIT");

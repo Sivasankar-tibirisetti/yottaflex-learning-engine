@@ -161,18 +161,22 @@ async function generateLearningPaths() {
         pathsInserted++;
       }
 
-      // First step is completed only because a real completed
-      // attempt exists. Remaining steps are pending.
-     
+    // Reflect the learner's actual completion history for each item.
+// A step is completed only when a real completed attempt exists.
+
 for (let stepIndex = 0; stepIndex < contentItems.length; stepIndex++) {
   const item = contentItems[stepIndex];
   const stepNumber = stepIndex + 1;
 
-  const stepStatus =
-    stepIndex === 0 ? "completed" : "pending";
+  const hasCompletedAttempt = Boolean(item.attempt_id);
 
-  const completedAt =
-    stepIndex === 0 ? item.completed_at : null;
+  const stepStatus = hasCompletedAttempt
+    ? "completed"
+    : "pending";
+
+  const completedAt = hasCompletedAttempt
+    ? item.completed_at
+    : null;
 
   const stepResult = await client.query(
     `

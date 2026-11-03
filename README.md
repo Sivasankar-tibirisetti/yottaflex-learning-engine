@@ -70,6 +70,30 @@ The dataset includes synthetic learner activity, multiple content types, assessm
 
 **Note:** The recorded attempt count is 500,001, one above the 500,000 baseline target. The additional record has not yet been attributed to a specific generation run.
 
+### Dataset Exports
+
+The project provides CSV and JSON exports of the generated PostgreSQL dataset.
+
+**Export locations**
+
+- `data/exports/csv/` — CSV exports for all 13 database tables.
+- `data/exports/json/ground_truth.json` — JSON export of the five labelled synthetic edge cases.
+- `sql/schema.sql` — executable PostgreSQL schema.
+- `sql/seed-data.dump` — compressed PostgreSQL data-only backup.
+- `sql/schema-inventory.sql` — schema inventory for inspection.
+
+**Generate exports**
+
+```bash
+npm run export:data
+```
+
+The export script reads the existing PostgreSQL database and writes the CSV and JSON files without modifying database records.
+
+The exported dataset contains 10,000 learners, 500 skills, 2,000 content items and 500,001 attempts, along with the associated assessment, mastery, recommendation and learning-path records.
+
+The exports represent the database state at the time the command is executed. They are not intended to be regenerated with identical timestamps or byte-for-byte identical contents across different database states.
+
 ## 5. Recommendation Workflow
 
 The recommendation workflow follows these stages:
@@ -247,6 +271,9 @@ yottaflex-learning-engine/
 └── README.md
 ```
 
-## 12. AI Assistance
+AI tools assisted during development, code review and debugging.
+Implementation decisions, database operations and validation results
+were reviewed during project development.
 
-AI tools assisted during development, code review and debugging. Database operations, implementation decisions and validation results were reviewed during project development.
+For details about AI usage, assistance, prompt history and personal
+review, see [AI Prompt History and Usage Disclosure](docs/AI_prompt_history.md).

@@ -1,0 +1,57 @@
+[
+  {
+    "ground_truth_id": "2",
+    "case_id": "EDGE-CONTENT-SKILL-001",
+    "case_type": "invalid_content_skill_mapping",
+    "entity_type": "content_skill_mapping",
+    "entity_id": "CNT-000001 -> SKL-NONEXISTENT-999",
+    "expected_violation": true,
+    "description": "A content-to-skill mapping references a skill that does not exist; the database should reject it.",
+    "validation_status": "detected",
+    "created_at": "2026-11-02T13:11:45.015Z"
+  },
+  {
+    "ground_truth_id": "4",
+    "case_id": "EDGE-FUTURE-MASTERY-001",
+    "case_type": "future_attempt_mastery",
+    "entity_type": "mastery_estimate",
+    "entity_id": "LRN-010000 -> SKL-000493",
+    "expected_violation": true,
+    "description": "A future attempt must not influence a historical mastery estimate calculated using an earlier data cutoff.",
+    "validation_status": "detected",
+    "created_at": "2026-11-02T13:39:04.138Z"
+  },
+  {
+    "ground_truth_id": "5",
+    "case_id": "EDGE-LEARNING-PATH-LOOP-001",
+    "case_type": "learning_path_loop",
+    "entity_type": "learning_path",
+    "entity_id": "PATH-9999-000001",
+    "expected_violation": true,
+    "description": "Repeated content occurs without an intervening completed step.",
+    "validation_status": "detected",
+    "created_at": "2026-11-02T13:47:32.664Z"
+  },
+  {
+    "ground_truth_id": "3",
+    "case_id": "EDGE-PREREQUISITE-001",
+    "case_type": "prerequisite_violation",
+    "entity_type": "synthetic_recommendation",
+    "entity_id": "LRN-000001 -> CNT-000004",
+    "expected_violation": true,
+    "description": "Synthetic recommendation violates the prerequisite rule because prerequisite skill SKL-000003 has mastery below 60%.",
+    "validation_status": "detected",
+    "created_at": "2026-11-02T13:19:50.716Z"
+  },
+  {
+    "ground_truth_id": "1",
+    "case_id": "EDGE-TIMESTAMP-001",
+    "case_type": "invalid_attempt_timestamp",
+    "entity_type": "attempt",
+    "entity_id": "SYNTHETIC-INVALID-TIMESTAMP-001",
+    "expected_violation": true,
+    "description": "Synthetic case where completed_at is earlier than started_at; the attempts table should reject this ordering.",
+    "validation_status": "detected",
+    "created_at": "2026-11-02T13:02:46.814Z"
+  }
+]

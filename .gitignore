@@ -1,3 +1,4 @@
 node_modules/
 .env
 data/generated/
+sql/seed-data.sql

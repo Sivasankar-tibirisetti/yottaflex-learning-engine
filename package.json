@@ -17,7 +17,8 @@
     "validate:future-mastery": "node src/validators/validateFutureAttemptMastery.js",
     "validate:path-loops": "node src/validators/validateLearningPathLoops.js",
     "validate:prerequisites": "node src/validators/validatePrerequisites.js",
-    "generate:learning-paths": "node src/generators/generateLearningPaths.js"
+    "generate:learning-paths": "node src/generators/generateLearningPaths.js",
+    "export:data": "node src/generators/exportDataset.js"
   },
   "keywords": [],
   "author": "",
